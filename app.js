@@ -1,10 +1,10 @@
 /* ==========================================================================
-   CHẤM CÔNG CỦA MI - APPLICATION LOGIC & DATA SYSTEM
+   CHẤM CÔNG CỦA NHI - APPLICATION LOGIC & DATA SYSTEM
    ========================================================================== */
 
-const KEY = "cham_cong_cua_mi_v1";
-const OLD_KEY = "bang_luong_offline_v2";
-const THEME_KEY = "cham_cong_mi_theme";
+const KEY = "cham_cong_cua_nhi_v1";
+const OLD_KEYS = ["cham_cong_cua_mi_v1", "bang_luong_offline_v2"];
+const THEME_KEY = "cham_cong_nhi_theme";
 
 const defaults = {
   settings: {
@@ -15,7 +15,7 @@ const defaults = {
     tvRate: 7
   },
   employees: [
-    { id: crypto.randomUUID(), name: "Mi", active: true }
+    { id: crypto.randomUUID(), name: "Nhi", active: true }
   ],
   attendance: []
 };
@@ -37,13 +37,19 @@ function load() {
     let raw = localStorage.getItem(KEY);
     if (!raw) {
       // Check legacy storage
-      raw = localStorage.getItem(OLD_KEY);
+      for (const old of OLD_KEYS) {
+        raw = localStorage.getItem(old);
+        if (raw) break;
+      }
     }
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed.settings) delete parsed.settings.ronRate;
       if (Array.isArray(parsed.employees)) {
         parsed.employees.forEach(e => delete e.ronRate);
+        if (parsed.employees.length === 1 && parsed.employees[0].name === "Mi") {
+          parsed.employees[0].name = "Nhi";
+        }
       }
       return parsed;
     }
@@ -153,7 +159,7 @@ function salary(month, emp = "") {
 
 // --- Theme Management ---
 function initTheme() {
-  const savedTheme = localStorage.getItem(THEME_KEY) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const savedTheme = localStorage.getItem(THEME_KEY) || localStorage.getItem("cham_cong_mi_theme") || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   setTheme(savedTheme);
   
   $("#themeToggleBtn")?.addEventListener("click", () => {
@@ -747,7 +753,7 @@ function exportData() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `cham-cong-cua-mi-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `cham-cong-cua-nhi-backup-${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   toast("Đã xuất file sao lưu JSON thành công ✨");
