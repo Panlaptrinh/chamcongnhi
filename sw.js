@@ -1,12 +1,12 @@
-const CACHE = "cham-cong-mi-v6";
+const CACHE = "cham-cong-mi-v8";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=6",
-  "./app.js?v=6",
+  "./styles.css?v=8",
+  "./app.js?v=8",
   "./manifest.webmanifest",
-  "./icons/icon-192.jpg?v=6",
-  "./icons/icon-512.jpg?v=6"
+  "./icons/icon-192.png?v=8",
+  "./icons/icon-512.png?v=8"
 ];
 
 self.addEventListener("install", e => {
